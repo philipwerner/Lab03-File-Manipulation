@@ -1,0 +1,14 @@
+dragon
+cat
+snake
+airplane
+monkey
+video
+computer
+magician
+dog
+house
+umbrella
+phone
+guitar
+horse
