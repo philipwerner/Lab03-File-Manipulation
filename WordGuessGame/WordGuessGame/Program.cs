@@ -9,9 +9,9 @@ namespace WordGuessGame
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome To TheWord Guess Game!");
-            MainMenu();
+            //MainMenu();
         }
-
+        
         /// <summary>
         /// the initial user interface of the program
         /// </summary>
@@ -175,7 +175,7 @@ namespace WordGuessGame
             }
             AddNewWord(newWord);
         }
-
+        
         /// <summary>
         /// takes the users new word and appends it to the word list
         /// </summary>
@@ -189,7 +189,7 @@ namespace WordGuessGame
             }
             return $"Your new word, {word}, has been added to the list.";
         }
-
+        
         /// <summary>
         /// deletes the word list txt file
         /// </summary>
@@ -210,6 +210,10 @@ namespace WordGuessGame
             return randNum;
         }
 
+        /// <summary>
+        /// finds the number of words in the words list
+        /// </summary>
+        /// <returns>returns the int type of the number of words</returns>
         public static int FindLengthOfList()
         {
             string wordList = CreateStringOfWords();
@@ -219,6 +223,11 @@ namespace WordGuessGame
             return length;
         }
 
+        /// <summary>
+        /// uses the return values of the FindLengthOfList and RandomNumber
+        /// methods to pick a word from the word list
+        /// </summary>
+        /// <returns>string type of the random word for the game</returns>
         public static string PickTheWord()
         {
             int length = FindLengthOfList();
@@ -230,12 +239,21 @@ namespace WordGuessGame
             return gameWord;
         }
 
+        /// <summary>
+        /// starts the guessing game process
+        /// </summary>
         public static void StartGame()
         {
             string mysteryWord = PickTheWord();
             GuessLetter(mysteryWord);
         }
 
+        /// <summary>
+        /// asks the user if they want to guess one or two letters
+        /// of the mystery word, sends the letter(s) to the appropriate
+        /// methods to handle one or two letter guesses
+        /// </summary>
+        /// <param name="word">string type of the current mystery word</param>
         public static void GuessLetter(string word)
         {
             string mysteryWord = word;
@@ -267,6 +285,9 @@ namespace WordGuessGame
             }
         }
 
+        /// <summary>
+        /// creates a file that stores the users guessed letters
+        /// </summary>
         public static void CreateGuessedLetterList()
         {
             try
@@ -283,6 +304,11 @@ namespace WordGuessGame
             }
         }
 
+        /// <summary>
+        /// adds the letter(s) guessed by the user one at a time to the
+        /// txt file created to store user guessed letters
+        /// </summary>
+        /// <param name="letter">char type of the users guessed letter</param>
         public static void AddGuessedLetters(char letter)
         {
             try
@@ -299,6 +325,12 @@ namespace WordGuessGame
             }
         }
 
+        /// <summary>
+        /// handles when a user guesses only one letter, lets the
+        /// user know if the letter is in the mystery word or not
+        /// </summary>
+        /// <param name="letter">char type of guessed letter</param>
+        /// <param name="word">string type of the current mystery word</param>
         public static void OneLetterGuess(char letter, string word)
         {
             string guessed = Convert.ToString(letter);
@@ -312,6 +344,13 @@ namespace WordGuessGame
             }
         }
 
+        /// <summary>
+        /// handles when a user guessed two letters, lets the user know if any
+        /// of the letters guessed are in the mystery word or not
+        /// </summary>
+        /// <param name="letterOne">char type of first letter guessed</param>
+        /// <param name="letterTwo">char type of second letter guessed</param>
+        /// <param name="word">string type of the current mystery word</param>
         public static void TwoLetterGuess(char letterOne, char letterTwo, string word)
         {
             string guessOne = Convert.ToString(letterOne);
@@ -334,6 +373,13 @@ namespace WordGuessGame
             }
         }
 
+        /// <summary>
+        /// eventually will show the user which letters and where in the word
+        /// they are at.
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="letter"></param>
+        /// <param name="correct"></param>
         public static void WordStatus(string word, string letter, string correct)
         {
             string[] letters = word.Split(' ');
@@ -357,5 +403,6 @@ namespace WordGuessGame
             }
             
         }
+        */
     }
 }
