@@ -9,21 +9,64 @@ namespace WordGuessGame
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome To TheWord Guess Game!");
-            //MainMenu();
+            string myPath = "wordList.txt";
+            MainMenu(myPath);
         }
         
         /// <summary>
         /// the initial user interface of the program
         /// </summary>
-        public static void MainMenu()
+        public static void MainMenu(string path)
         {
-            Console.WriteLine("What would you like to do?");
-            Console.WriteLine("1. Play A New Game");
-            Console.WriteLine("2. Add a new word");
-            Console.WriteLine("3. Edit word list");
-            Console.WriteLine("4. View word list");
-            Console.WriteLine("5. Exit the game");
-            byte option = Convert.ToByte(Console.ReadLine());
+            try
+            {
+                Console.WriteLine("What would you like to do?");
+                Console.WriteLine("1. Play A New Game");
+                Console.WriteLine("2. Add a new word");
+                Console.WriteLine("3. Remove a word from list");
+                Console.WriteLine("4. View word list");
+                Console.WriteLine("5. Exit the game");
+                int option = Convert.ToInt32(Console.ReadLine());
+                HandleOption(option, path);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Please eneter a number between 1 and 5.");
+                MainMenu(path);
+            }
+        }
+
+        /// <summary>
+        /// Takes the user selection and runs the corresponding method
+        /// </summary>
+        /// <param name="option">byte type of user selection</param>
+        public static void HandleOption(int option, string path)
+        {
+            if (option == 1)
+            {
+                StartGame(path);
+            }
+            if (option == 2)
+            {
+                GetNewWord(path);
+            }
+            if (option == 3)
+            {
+                GetRemoveWord(path);
+            }
+            if (option == 4)
+            {
+                ViewWordList(path);
+            }
+            if (option == 5)
+            {
+                Environment.Exit(0);
+            }
+            if (option > 5)
+            {
+                Console.WriteLine("Please choose an option 1-5");
+                MainMenu(path);
+            }
         }
 
         /// <summary>
@@ -31,14 +74,14 @@ namespace WordGuessGame
         /// the file.
         /// </summary>
         /// <param name="words">string type of the words to be added to the new file</param>
-        public static void CreateFile(string words)
+        public static void CreateFile(string words, string path)
         {
-            DeleteWordList();
+            DeleteWordList(path);
             char[] seperators = { ' ', ',', ';', '.', '\t', ':' };
             string[] wordArray = words.Split(seperators);
             try
             {
-                using (StreamWriter sw = new StreamWriter("..//wordList.txt"))
+                using (StreamWriter sw = new StreamWriter(path))
                 {
                     foreach (string s in wordArray)
                     {
@@ -59,11 +102,11 @@ namespace WordGuessGame
         /// <summary>
         /// displays the list of words in the console for the user
         /// </summary>
-        public static void ViewWordList()
+        public static void ViewWordList(string path)
         {
             try
             {
-                using (StreamReader sr = File.OpenText("..//wordList.txt"))
+                using (StreamReader sr = File.OpenText(path))
                 {
                     string s = "";
                     while ((s = sr.ReadLine()) != null)
@@ -76,6 +119,9 @@ namespace WordGuessGame
             {
                 throw;
             }
+            Console.WriteLine("Press any key to continue to Main Menu.....");
+            Console.ReadKey();
+            MainMenu(path);
         }
 
         /// <summary>
@@ -83,11 +129,11 @@ namespace WordGuessGame
         /// by other methods
         /// </summary>
         /// <returns>string type of the wordList.txt file</returns>
-        public static string CreateStringOfWords()
+        public static string CreateStringOfWords(string path)
         {
             try
             {
-                using (StreamReader sr = File.OpenText("..//wordList.txt"))
+                using (StreamReader sr = File.OpenText(path))
                 {
                     string s = "";
                     string words = "";
@@ -108,16 +154,16 @@ namespace WordGuessGame
         /// prompts and stores the word the user wants to delete, then
         /// passes it to the EditList method
         /// </summary>
-        public static void GetRemoveWord()
+        public static void GetRemoveWord(string path)
         {
             Console.WriteLine("What word do you want to remove?");
             string word = Console.ReadLine().ToLower();
             if (word.Contains(" "))
             {
                 Console.WriteLine("Please enter a single word.");
-                GetRemoveWord();
+                GetRemoveWord(path);
             }
-            EditList(word);
+            EditList(word, path);
         }
 
         /// <summary>
@@ -126,9 +172,9 @@ namespace WordGuessGame
         /// to the CreateFile method. If word is not in the list, it informs the user.
         /// </summary>
         /// <param name="word">string type of all the words in the list</param>
-        public static void EditList(string word)
+        public static void EditList(string word, string path)
         {
-            string wordList = CreateStringOfWords();
+            string wordList = CreateStringOfWords(path);
             char[] seperators = { ' ', ',', ';', '.', '\t', ':' };
             string[] wordArray = wordList.Split(seperators);
             string[] newArray = new string[wordArray.Length - 1];
@@ -157,23 +203,26 @@ namespace WordGuessGame
                 Console.WriteLine("The word does not exist!");
             }
             string words = string.Join(" ", newArray);
-            CreateFile(words);
-            
+            CreateFile(words, path);
+            Console.WriteLine("Press any key to continue to Main Menu.....");
+            Console.ReadKey();
+            MainMenu(path);
+
         }
 
         /// <summary>
         /// prompts the user about what word they want to add, sends input to AddNewWord method
         /// </summary>
-        public static void GetNewWord()
+        public static void GetNewWord(string path)
         {
             Console.WriteLine("What word would you like to add?");
             string newWord = Console.ReadLine().ToLower();
             if (newWord.Contains(" "))
             {
                 Console.WriteLine("Please enter a single word.");
-                GetNewWord();
+                GetNewWord(path);
             }
-            AddNewWord(newWord);
+            AddNewWord(newWord, path);
         }
         
         /// <summary>
@@ -181,9 +230,9 @@ namespace WordGuessGame
         /// </summary>
         /// <param name="word">string type of the users new word</param>
         /// <returns>a string letting the user know the word has been added</returns>
-        public static string AddNewWord(string word)
+        public static string AddNewWord(string word, string path)
         {
-            using (StreamWriter sw = File.AppendText("..//wordList.txt"))
+            using (StreamWriter sw = File.AppendText(path))
             {
                 sw.WriteLine(word);
             }
@@ -193,9 +242,9 @@ namespace WordGuessGame
         /// <summary>
         /// deletes the word list txt file
         /// </summary>
-        public static void DeleteWordList()
+        public static void DeleteWordList(string path)
         {
-            File.Delete("..//wordList.txt");
+            File.Delete(path);
         }
 
         /// <summary>
@@ -214,9 +263,9 @@ namespace WordGuessGame
         /// finds the number of words in the words list
         /// </summary>
         /// <returns>returns the int type of the number of words</returns>
-        public static int FindLengthOfList()
+        public static int FindLengthOfList(string path)
         {
-            string wordList = CreateStringOfWords();
+            string wordList = CreateStringOfWords(path);
             char[] seperators = { ' ', ',', ';', '.', '\t', ':' };
             string[] wordArray = wordList.Split(seperators);
             int length = wordArray.Length;
@@ -228,11 +277,11 @@ namespace WordGuessGame
         /// methods to pick a word from the word list
         /// </summary>
         /// <returns>string type of the random word for the game</returns>
-        public static string PickTheWord()
+        public static string PickTheWord(string path)
         {
-            int length = FindLengthOfList();
+            int length = FindLengthOfList(path);
             int index = RandomNumber(length);
-            string wordList = CreateStringOfWords();
+            string wordList = CreateStringOfWords(path);
             char[] seperators = { ' ', ',', ';', '.', '\t', ':' };
             string[] wordArray = wordList.Split(seperators);
             string gameWord = wordArray[index];
@@ -242,10 +291,15 @@ namespace WordGuessGame
         /// <summary>
         /// starts the guessing game process
         /// </summary>
-        public static void StartGame()
+        public static void StartGame(string path)
         {
-            string mysteryWord = PickTheWord();
-            GuessLetter(mysteryWord);
+            string mysteryWord = PickTheWord(path);
+            string[] letters = mysteryWord.Split(' ');
+            for (int i = 0; i < letters.Length; i++)
+            {
+                letters[i] = "_";
+            }
+            GuessLetter(mysteryWord, path, letters);
         }
 
         /// <summary>
@@ -254,10 +308,10 @@ namespace WordGuessGame
         /// methods to handle one or two letter guesses
         /// </summary>
         /// <param name="word">string type of the current mystery word</param>
-        public static void GuessLetter(string word)
+        public static void GuessLetter(string word, string path, string[] status)
         {
             string mysteryWord = word;
-            Console.WriteLine("Would you like to guess 1 or 2 words?");
+            Console.WriteLine("Would you like to guess 1 or 2 letters?");
             string amount = Console.ReadLine();
             if (amount == "1")
             {
@@ -265,9 +319,9 @@ namespace WordGuessGame
                 Console.WriteLine("What letter are you guessing?");
                 char oneLetter = Convert.ToChar(Console.ReadLine().ToLower());
                 AddGuessedLetters(oneLetter);
-                OneLetterGuess(oneLetter, mysteryWord);
+                OneLetterGuess(oneLetter, mysteryWord, status, path);
             }
-            if (amount == "2")
+            else if (amount == "2")
             {
                 Console.WriteLine("OK, guessing 2 letters");
                 Console.WriteLine("Enter the first letter to guess");
@@ -276,12 +330,12 @@ namespace WordGuessGame
                 Console.WriteLine("What is the second letter?");
                 char secondLetter = Convert.ToChar(Console.ReadLine().ToLower());
                 AddGuessedLetters(secondLetter);
-                TwoLetterGuess(firstLetter, secondLetter, mysteryWord);
+                TwoLetterGuess(firstLetter, secondLetter, mysteryWord, status, path);
             }
-            if (amount != "1" || amount != "2")
+            else
             {
                 Console.WriteLine("Please respond with 1 or 2.");
-                GuessLetter(mysteryWord);
+                GuessLetter(mysteryWord, path, status);
             }
         }
 
@@ -292,7 +346,7 @@ namespace WordGuessGame
         {
             try
             {
-                using (StreamWriter sw = new StreamWriter("..//guessedList.txt"))
+                using (StreamWriter sw = new StreamWriter("guessedList.txt"))
                 {
                     sw.Write("Guessed Letters");
                 }
@@ -331,7 +385,7 @@ namespace WordGuessGame
         /// </summary>
         /// <param name="letter">char type of guessed letter</param>
         /// <param name="word">string type of the current mystery word</param>
-        public static void OneLetterGuess(char letter, string word)
+        public static void OneLetterGuess(char letter, string word, string[] status, string path)
         {
             string guessed = Convert.ToString(letter);
             if (word.Contains(guessed))
@@ -342,6 +396,9 @@ namespace WordGuessGame
             {
                 Console.WriteLine("Nope");
             }
+            WordStatus(word, letter, status);
+            GuessLetter(word, path, status);
+            
         }
 
         /// <summary>
@@ -351,7 +408,7 @@ namespace WordGuessGame
         /// <param name="letterOne">char type of first letter guessed</param>
         /// <param name="letterTwo">char type of second letter guessed</param>
         /// <param name="word">string type of the current mystery word</param>
-        public static void TwoLetterGuess(char letterOne, char letterTwo, string word)
+        public static void TwoLetterGuess(char letterOne, char letterTwo, string word, string[] status, string path)
         {
             string guessOne = Convert.ToString(letterOne);
             string guessTwo = Convert.ToString(letterTwo);
@@ -371,6 +428,9 @@ namespace WordGuessGame
             {
                 Console.WriteLine($"The mystery word does not contain {guessOne} or {guessTwo}.");
             }
+            WordStatus(word, letterOne, status);
+            WordStatus(word, letterTwo, status);
+            GuessLetter(word, path, status);
         }
 
         /// <summary>
@@ -380,29 +440,24 @@ namespace WordGuessGame
         /// <param name="word"></param>
         /// <param name="letter"></param>
         /// <param name="correct"></param>
-        public static void WordStatus(string word, string letter, string correct)
+        public static string[] WordStatus(string word, char letterGuess, string[] status)
         {
             string[] letters = word.Split(' ');
-            string[] correctLetters = correct.Split(' ');
-            for (int i = 0; i < correctLetters.Length; i++)
+            string letter = Convert.ToString(letterGuess);
+            Console.WriteLine("Current Status");
+            Console.WriteLine();
+            for (int i = 0; i < letters.Length; i++)
             {
                 if (letters[i] == letter)
                 {
-                    correctLetters[i] = letter;
+                    status[i] = letter;
                 }
-                if (letters[i] != letter)
-                {
-                    correctLetters[i] = "_";
-                }
-                foreach (string s in correctLetters)
-                {
-                    Console.Write(s);
-                }
-                correct = String.Join("", correctLetters);
+                Console.Write(status[i]);               
                 
             }
-            
+            Console.WriteLine();
+            return status;
         }
-        */
+        
     }
 }

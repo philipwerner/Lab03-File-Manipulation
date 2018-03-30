@@ -7,14 +7,13 @@ namespace GuessGameTest
 {
     public class UnitTest1
     {
-        /*
+        
         [Fact]
         public void CanMakeStringOfWords()
         {
-            Assert.Equal("dragon, cat, snake, airplane, monkey, video, computer, magician, dog, house, umbrella, phone, guitar, horse", Creat
-                ());
+            Assert.Equal("dragon, cat, snake, airplane, monkey, video, computer, magician, dog, house, umbrella, phone, guitar, horse", Create());
         }
-        */
+        
         [Theory]
         [InlineData("Your new word, alpha, has been added to the list.", "alpha")]
         [InlineData("Your new word, beta, has been added to the list.", "beta")]
